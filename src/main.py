@@ -1,7 +1,7 @@
 import os
 import asyncio
 from dotenv import load_dotenv
-from Functions import *
+from Functions import add_pr_comment, list_pr_files, analyze_pr
 
 
 load_dotenv()

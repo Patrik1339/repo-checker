@@ -22,3 +22,5 @@ rad.json
 TestResults.xml
 #Env file
 .env
+#Tests file
+src/tests.py

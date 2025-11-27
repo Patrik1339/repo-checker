@@ -2,13 +2,13 @@ from GitHubMCPClient import GitHubMCPClient
 from GeminiGitHubAgent import GeminiGitHubAgent
 
 
-async def add_pr_comment(GITHUB_OWNER, GITHUB_REPO, GITHUB_TOKEN, TARGET_PR_NUMBER):
+async def add_pr_comment(GITHUB_OWNER, GITHUB_REPO, GITHUB_TOKEN, TARGET_PR_NUMBER, GEN_API_KEY, MODEL_ID):
     """Adds a comment to PR if secrets are detected in the changes."""
     mcp = GitHubMCPClient(GITHUB_TOKEN)
     await mcp.start()
     
     try:
-        agent = GeminiGitHubAgent(mcp)
+        agent = GeminiGitHubAgent(mcp, GEN_API_KEY=GEN_API_KEY, MODEL_ID=MODEL_ID)
         await agent.initialize()
         
         task = f"""
@@ -29,7 +29,8 @@ async def add_pr_comment(GITHUB_OWNER, GITHUB_REPO, GITHUB_TOKEN, TARGET_PR_NUMB
         
         3. If you find ANY secrets or suspicious credentials:
            - Identify the exact file name and line number where the secret was found
-           - Use the appropriate tool to add a review comment on that specific line
+           - Add a general PR comment summarizing the findings
+           - Make sure to post the comment on the PR
            - The comment should be professional, clear, and include:
              * What type of secret was detected
              * Why this is a security risk
@@ -38,6 +39,10 @@ async def add_pr_comment(GITHUB_OWNER, GITHUB_REPO, GITHUB_TOKEN, TARGET_PR_NUMB
         
         4. If you add comments, summarize what secrets were found and where
         5. If no secrets are found, confirm that the PR looks secure
+        6. Post the comment using this endpoint:
+            url = "https://api.github.com/repos/OWNER/REPO/issues/PR_NUMBER/comments"
+            data = {{"body": "Insert what you found here"}}
+            response = requests.post(url, json=data, headers=headers)
         
         Be thorough and check all added or modified lines carefully. Security is critical.
         """
@@ -53,13 +58,13 @@ async def add_pr_comment(GITHUB_OWNER, GITHUB_REPO, GITHUB_TOKEN, TARGET_PR_NUMB
         await mcp.stop()
 
 
-async def list_pr_files(GITHUB_OWNER, GITHUB_REPO, GITHUB_TOKEN, TARGET_PR_NUMBER):
+async def list_pr_files(GITHUB_OWNER, GITHUB_REPO, GITHUB_TOKEN, TARGET_PR_NUMBER, GEN_API_KEY, MODEL_ID):
     """Lists all files modified in a pull request."""
     mcp = GitHubMCPClient(GITHUB_TOKEN)
     await mcp.start()
     
     try:
-        agent = GeminiGitHubAgent(mcp)
+        agent = GeminiGitHubAgent(mcp, GEN_API_KEY=GEN_API_KEY, MODEL_ID=MODEL_ID)
         await agent.initialize()
         
         task = f"""
@@ -83,13 +88,13 @@ async def list_pr_files(GITHUB_OWNER, GITHUB_REPO, GITHUB_TOKEN, TARGET_PR_NUMBE
         await mcp.stop()
 
 
-async def analyze_pr(GITHUB_OWNER, GITHUB_REPO, GITHUB_TOKEN, TARGET_PR_NUMBER):
+async def analyze_pr(GITHUB_OWNER, GITHUB_REPO, GITHUB_TOKEN, TARGET_PR_NUMBER, GEN_API_KEY, MODEL_ID):
     """Performs a comprehensive analysis of a pull request."""
     mcp = GitHubMCPClient(GITHUB_TOKEN)
     await mcp.start()
     
     try:
-        agent = GeminiGitHubAgent(mcp)
+        agent = GeminiGitHubAgent(mcp, GEN_API_KEY=GEN_API_KEY, MODEL_ID=MODEL_ID)
         await agent.initialize()
         
         task = f"""

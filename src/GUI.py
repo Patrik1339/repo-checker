@@ -69,18 +69,22 @@ text_results.pack(fill=tk.BOTH, expand=True)
 
 def run_async_in_thread(async_func):
     def worker():
-        result = asyncio.run(async_func(GITHUB_OWNER, GITHUB_REPO, GITHUB_TOKEN, TARGET_PR_NUMBER))
+        result = asyncio.run(async_func(GITHUB_OWNER, GITHUB_REPO, GITHUB_TOKEN, TARGET_PR_NUMBER, GEN_API_KEY, MODEL_ID))
         text_results.after(0, lambda: text_results.insert(tk.END, str(result) + "\n"))
     
     threading.Thread(target=worker).start()
 
 
+tk.Button(frame_buttons, text="Exit", width=20,
+          command=lambda: root.destroy()).pack(pady=5)
 tk.Button(frame_buttons, text="1. Add PR comment", width=20,
           command=lambda: run_async_in_thread(add_pr_comment)).pack(pady=5)
 tk.Button(frame_buttons, text="2. List all files in PR", width=20,
           command=lambda: run_async_in_thread(list_pr_files)).pack(pady=5)
 tk.Button(frame_buttons, text="3. Analyze full PR", width=20,
           command=lambda: run_async_in_thread(analyze_pr)).pack(pady=5)
+tk.Button(frame_buttons, text="Clear output screen", width=20,
+          command=lambda: text_results.delete(1.0, tk.END)).pack(pady=5)
 
 tk.Label(frame_buttons, text="GitHub username:").pack(pady=5)
 username_entry = tk.Entry(frame_buttons, width=30)

@@ -1,13 +1,13 @@
-from main import GEN_API_KEY, MODEL_ID
 from google import genai
 from google.genai import types
 from GitHubMCPClient import GitHubMCPClient
 
 
 class GeminiGitHubAgent:
-    def __init__(self, mcp_client: GitHubMCPClient):
+    def __init__(self, mcp_client: GitHubMCPClient, GEN_API_KEY: str, MODEL_ID: str):
         self.mcp_client = mcp_client
         self.client = genai.Client(api_key=GEN_API_KEY)
+        self.MODEL_ID = MODEL_ID
         self.tools = []
         
     def _clean_schema(self, schema: dict) -> dict:
@@ -60,7 +60,7 @@ class GeminiGitHubAgent:
         
         try:
             response = self.client.models.generate_content(
-                model=MODEL_ID,
+                model=self.MODEL_ID,
                 contents=task,
                 config=types.GenerateContentConfig(
                     tools=[types.Tool(function_declarations=self.tools)],
@@ -129,7 +129,7 @@ class GeminiGitHubAgent:
                 
                 try:
                     response = self.client.models.generate_content(
-                        model=MODEL_ID,
+                        model=self.MODEL_ID,
                         contents=conversation_history,
                         config=types.GenerateContentConfig(
                             tools=[types.Tool(function_declarations=self.tools)],
